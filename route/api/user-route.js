@@ -67,6 +67,30 @@ router.put('/:id', (req, res) => {
 });
 });
 
+//
+router.post('/login',(req,res)=>{
+    User.findOne({
+        where:{
+            email:req.body.email
+        }
+})
+.then(dbUserData=>{
+    if (!dbUserData) {
+        res.status(400).json({ message: 'No user with that email address!' });
+        return;
+      }
+      const validPassword=dbUserData.checkUserPassword(req.body.password)
+      if(!validPassword){
+        res.status(400).json({message:'incorrect password'})  
+        return;
+      }
+   res.json({ user: dbUserData ,message:'you are now logged in'});
+   })
+})
+
+
+
+
 // DELETE /api/users/1
 router.delete('/:id', (req, res) => {
     User.destroy({
@@ -85,4 +109,4 @@ router.delete('/:id', (req, res) => {
     
 });
 
-module.exports = router;
+module.exports = router
