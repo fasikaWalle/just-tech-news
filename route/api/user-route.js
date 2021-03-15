@@ -5,7 +5,9 @@ const {User}=require('../../models')
 // GET /api/users
 router.get('/', (req, res) => {
       // Access our User model and run .findAll() method equivalen to SELECT * FROM users;)
-      User.findAll().then(dbUserData=>{res.json(dbUserData)}).catch(err=>{
+      User.findAll({
+        attributes: { exclude: ['password'] }
+      }).then(dbUserData=>{res.json(dbUserData)}).catch(err=>{
           console.log(err)
           res.status(500).json(err)
       });
@@ -14,8 +16,13 @@ router.get('/', (req, res) => {
 // GET /api/users/1
 router.get('/:id', (req, res) => {
     //similar to SELECT * FROM users WHERE id = 1
-    User.findOne({where:{
-        id:req.params.id}}).then(dbUserData=>{if(!dbUserData){
+    User.findOne({
+       attribtes:{
+           exclude:['password']
+       },
+        where:{
+        id:req.params.id}
+    }).then(dbUserData=>{if(!dbUserData){
             res.status(404).json({message:'there is no user with this id'})
             return;
         }
@@ -28,6 +35,7 @@ router.get('/:id', (req, res) => {
 
 // POST /api/users
 router.post('/', (req, res) => {
+    console.log(req.body)
     User.create({
         username:req.body.username,
         email:req.body.email,
@@ -38,7 +46,19 @@ router.post('/', (req, res) => {
     
     
 });
-
+router.post('/', (req, res) => {
+    // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
+    User.create({
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password
+    })
+      .then(dbUserData => res.json(dbUserData))
+      .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  });
 // PUT /api/users/1
 router.put('/:id', (req, res) => {
     User.update(req.body,{
