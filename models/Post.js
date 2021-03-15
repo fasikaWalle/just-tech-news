@@ -19,7 +19,7 @@ Post.init({
        
    },
   post_url:{
-     type:DataTypes.INTEGER,
+     type:DataTypes.STRING,
      validate:{
         isURL:true
     }

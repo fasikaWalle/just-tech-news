@@ -13,6 +13,7 @@ const PORT=process.env.PORT||3000
 
 
 //turn on connection to db and server
+//force:true similar as DROP TABLE IF EXISTS
 sequelize.sync({force:false}).then(()=>{
     app.listen(PORT,()=>console.log(`running on port ${PORT}`)) 
 })
