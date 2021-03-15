@@ -6,11 +6,10 @@ const app=express()
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//turn on routes
 app.use(routes)
 
 const PORT=process.env.PORT||3000
-//turn on routes
-
 
 
 //turn on connection to db and server
