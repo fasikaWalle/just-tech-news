@@ -3,7 +3,33 @@ const sequelize=require('../config/connection')
 const { post } = require('../route/api/user-route')
 
 //create  our post model
-class Post extends Model{}
+    //we're using JavaScript's built-in static keyword to indicate that the upvote method is one that's based 
+    //on the Post model and not an instance method like we used earlier with the User model. 
+    class Post extends Model {
+        static upvote(body, models) {
+          return models.Vote.create({
+            user_id: body.user_id,
+            post_id: body.post_id
+          }).then(() => {
+            return Post.findOne({
+              where: {
+                id: body.post_id
+              },
+              attributes: [
+                'id',
+                'post_url',
+                'title',
+                'created_at',
+                [
+                  sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'),
+                  'vote_count'
+                ]
+              ]
+            });
+          });
+        }
+      }
+    
 
 //create fields/columns for post model
 Post.init({
