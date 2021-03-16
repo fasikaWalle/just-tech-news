@@ -1,7 +1,7 @@
 
 const router=require('express').Router()
 const sequelize = require('../../config/connection');
-const {User,Post, Vote}=require('../../models')
+const {User,Post, Vote,Comment}=require('../../models')
 //Sequelize is a JavaScript Promise-based library
 // GET /api/users
 router.get('/', (req, res) => {
@@ -34,6 +34,14 @@ router.get('/:id', (req, res) => {
           attributes: ['title'],
           through: Vote,
           as: 'voted_posts'
+        },{
+            model:Comment,
+            attributes:["id","comment_text","createdAt"],
+            include:{
+                model:Post,
+                attributes:["title"]
+            }
+            
         }
       ]
     })
@@ -107,9 +115,6 @@ router.post('/login',(req,res)=>{
    res.json({ user: dbUserData ,message:'you are now logged in'});
    })
 })
-
-
-
 
 // DELETE /api/users/1
 router.delete('/:id', (req, res) => {
