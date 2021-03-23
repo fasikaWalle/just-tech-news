@@ -1,6 +1,6 @@
 const {Model,DataTypes}=require('sequelize')
 const sequelize=require('../config/connection')
-const { post } = require('../route/api/user-route')
+const { post } = require('../controllers/api/user-route')
 
 //create  our post model
     //we're using JavaScript's built-in static keyword to indicate that the upvote method is one that's based 

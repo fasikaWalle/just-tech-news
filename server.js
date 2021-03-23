@@ -1,15 +1,29 @@
 //Create the Database Connection
-const express=require('express')
-const routes=require('./route')
-const sequelize=require('./config/connection')
-const app=express()
+const path = require('path');
+const express = require('express');
+const exphbs = require('express-handlebars');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+
+const sequelize = require('./config/connection');
+
+const hbs = exphbs.create({});
+
+app.engine('handlebars',hbs.engine);
+app.set('view engine','handlebars');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(require('./controllers/'))
+
 
 //turn on routes
-app.use(routes)
-
-const PORT=process.env.PORT||3000
+// app.use(routes)
+// app.use(express.static(path.join(__dirname,'public')))
 
 
 //turn on connection to db and server
@@ -19,6 +33,12 @@ sequelize.sync({force:false}).then(()=>{
 })
 
 
+// MVC is a popular software-design pattern that organizes your app into the three following separate concerns:
 
+// Models: the core data of your app
+
+// Views: the UI components, such as your HTML layouts
+
+// Controllers: the link between your models and views
 
 
