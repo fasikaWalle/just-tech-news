@@ -44,6 +44,40 @@ router.get('/login',(req,res)=>{
   res.render('login')
 })
 
+router.get('/:id',(req,res)=>{
+Post.findOne({
+  where:{
+    id:req.params.id
+  },
+ attributes:['id','title','post_url','createdAt','user_id',
+[sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id=vote.post_id )'),'vote_count']],
 
+
+ include:[
+  {
+    model:User,
+  attributes:['username'] },
+  
+ {
+   model:Comment,
+   attributes:['id','comment_text','post_id','user_id','createdAt'],
+   include:{
+    model:User,
+    attributes:['username']
+   }
+ }
+ ]
+  
+}).then(dbPostData=>{
+  if(!dbPostData){
+    res.status(404).json({message:"no post found with this id"})
+  }
+  const post=dbPostData.get({plain:true})
+  console.log(post)
+  res.render('single_post',{post})
+}).catch(err=>{
+  res.status(500).json(err)
+})
+})
 
 module.exports = router;
