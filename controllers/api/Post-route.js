@@ -2,7 +2,8 @@
 const router =require('express').Router()
 const {Post,User,Vote,Comment}=require('../../models');
 const { sequelize } = require('../../models/User');
-
+const { post } = require('./user-route');
+console.log(post)
 
 // get all users
 router.get('/', (req, res) => {
@@ -32,6 +33,7 @@ router.get('/', (req, res) => {
       });
   });
 router.get('/:id',(req,res)=>{
+
   Post.findOne({
     where:{
       id:req.params.id
@@ -55,40 +57,18 @@ router.get('/:id',(req,res)=>{
   })
 })
 // PUT /api/posts/upvote
-// router.post('/upvote', (req, res) => {
-//   Vote.create({
-//     user_id:req.body.user_id,
-//     post_id:req.body.post_id
-//   }).then(()=>{
-//     return Post.findOne({
-//       where:{
-//         id:req.body.post_id
-//       },
-//       attributes:['id','post_url','title','createdAt',
-//       [
-//             // use raw MySQL aggregate function query to get a count of how many votes the post has and return it under the name `vote_count`
-//         sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'),
-//         'vote_count'
-//       ]
-//     ],
-  
-//     }).then(dbPostData => res.json(dbPostData))
-//     .catch(err => {
-//       console.log(err);
-//       res.status(400).json(err);
-//     });
-//   })
-    
-//   });
-// create the vote
-router.post('/upvote', (req, res) => {
-  // custom static method created in models/Post.js
-  Post.upvote(req.body, { Vote })
-    .then(updatedPostData => res.json(updatedPostData))
-    .catch(err => {
-      console.log(err);
-      res.status(400).json(err);
-    });
+router.put('/upvote',(req,res)=>{
+  console.log(req.body)
+   // make sure the session exists first
+  if(req.session){
+    // pass session id along with all destructured properties on req.b
+    post.upvote({...req.body,user_id:req.session.user_id},{Vote,Comment,User})
+    .then(updateVoteData=>{
+      res.json(updateVoteData)
+    }).catch(err=>{
+      res.status(500).json(err)
+    })
+  }
 });
 router.post('/', (req, res) => {
   // expects {title: 'Taskmaster goes public!', post_url: 'https://taskmaster.com/press', user_id: 1}

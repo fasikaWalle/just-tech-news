@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
     // console.log(dbPostData[0])
     const posts=dbPostData.map(post=>post.get({palin:true}))
     // console.log({posts})
-    res.render('homepage',{posts})
+    res.render('homepage',{posts,loggedIn:req.session.loggedIn})
   }).catch(err=>{
     console.log(err)
     res.status(500).json(err);
@@ -45,6 +45,7 @@ router.get('/login',(req,res)=>{
 })
 
 router.get('/:id',(req,res)=>{
+ 
 Post.findOne({
   where:{
     id:req.params.id
@@ -72,9 +73,16 @@ Post.findOne({
   if(!dbPostData){
     res.status(404).json({message:"no post found with this id"})
   }
+  
   const post=dbPostData.get({plain:true})
-  console.log(post)
-  res.render('single_post',{post})
+   if(req.session){
+    res.render('single_post',{
+      post,
+      loggedIn:req.session.loggedIn
+    })
+  }else{
+    res.render('single-post-no-form')
+  }
 }).catch(err=>{
   res.status(500).json(err)
 })
