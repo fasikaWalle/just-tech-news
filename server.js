@@ -5,13 +5,13 @@ const exphbs = require('express-handlebars');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
-
+const helpers=require('./__test__/utilis/helpers')
 
 const sequelize = require('./config/connection');
 // const Sequelize  = require('sequelize/types');
 const session = require('express-session');
 
-const hbs = exphbs.create({});
+const hbs = exphbs.create({helpers});
 const SequelizeStore=require('connect-session-sequelize')(session.Store);
 const sess={
     secret:'canyouguessmysecret',

@@ -3,7 +3,7 @@ const sequelize = require('../config/connection');
 const {User,Comment,Post}=require('../models')
 
 router.get('/', (req, res) => {
- console.log(req.session)
+ //console.log(req.session)
   Post.findAll({
     attributes:[
       'id',
@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
   }).then(dbPostData=>{
     // console.log(dbPostData[0])
     const posts=dbPostData.map(post=>post.get({palin:true}))
-    // console.log({posts})
+    console.log(posts)
     res.render('homepage',{posts,loggedIn:req.session.loggedIn})
   }).catch(err=>{
     console.log(err)
@@ -75,6 +75,7 @@ Post.findOne({
   }
   
   const post=dbPostData.get({plain:true})
+  //console.log(post)
    if(req.session){
     res.render('single_post',{
       post,
