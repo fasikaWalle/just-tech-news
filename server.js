@@ -54,4 +54,4 @@ sequelize.sync({force:false}).then(()=>{
 
 // Controllers: the link between your models and views
 
-
+// At a high-level, middleware is just a function that executes before the function that sends the response back.

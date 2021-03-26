@@ -44,7 +44,7 @@ router.get('/login',(req,res)=>{
   res.render('login')
 })
 
-router.get('/:id',(req,res)=>{
+router.get('/post/:id',(req,res)=>{
  
 Post.findOne({
   where:{
@@ -88,5 +88,6 @@ Post.findOne({
   res.status(500).json(err)
 })
 })
+
 
 module.exports = router;
